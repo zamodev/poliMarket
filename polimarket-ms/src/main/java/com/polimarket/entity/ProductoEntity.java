@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @Table(name = "PRODUCTO")
@@ -26,4 +27,6 @@ public class ProductoEntity {
     private BigDecimal precio;
     @Column(name = "activo")
     private boolean activo;
+    @OneToMany(mappedBy = "producto")
+    private List<ItemOrdenCompraEntity> itemsOrdenCompras;
 }
