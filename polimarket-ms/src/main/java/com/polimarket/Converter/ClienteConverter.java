@@ -26,4 +26,14 @@ public class ClienteConverter {
         }
         return clientes;
     }
+
+
+    public static ClienteEntity ClienteConverterTOEntity(Cliente cliente)
+    {
+        return ClienteEntity.builder()
+                .email(cliente.getEmail())
+                .nombre(cliente.getNombre())
+                .esPotencial(true)
+                .build();
+    }
 }

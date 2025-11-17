@@ -1,12 +1,12 @@
 package com.polimarket.Controllers;
 
+import com.polimarket.DTO.DetalleVentaDTO;
+import com.polimarket.DTO.VentaDTO;
 import com.polimarket.Service.VentasService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/polimarket/v1/ventas")
@@ -18,5 +18,10 @@ public class VentasController {
     @GetMapping("/clientes")
     public ResponseEntity<?> findPosibles() {
         return ResponseEntity.status(HttpStatus.OK).body(ventasService.listarClientesPosibles());
+    }
+
+    @PostMapping("/registrar-venta")
+    public ResponseEntity<?> registrarVenta(@RequestBody VentaDTO ventaDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ventasService.registrarVenta(ventaDTO));
     }
 }
