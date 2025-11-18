@@ -30,7 +30,7 @@ public class VentaConverter {
 
 
         return DetalleVentaDTO.builder()
-                .idProducto(detalleVenta.getProductoEntity().getId())
+                .idProducto(detalleVenta.getProductoEntity().getIdProducto())
                 .cantidad(detalleVenta.getCantidad())
                 .precioUnitario(detalleVenta.getProductoEntity().getPrecio())
                 .descripcion(detalleVenta.getProductoEntity().getNombre())

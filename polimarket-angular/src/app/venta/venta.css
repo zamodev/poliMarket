@@ -1,0 +1,11 @@
+.venta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

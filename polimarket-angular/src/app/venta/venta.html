@@ -1,1 +1,46 @@
-<p>venta works!</p>
+<form [formGroup]="ventaForm" (ngSubmit)="guardar()" class="venta-form">
+
+    <!-- Cliente -->
+    <div formGroupName="cliente">
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email">
+        </mat-form-field>
+    </div>
+
+    <!-- Items Venta -->
+    <div formArrayName="itemsVenta">
+        @for (item of itemsVenta.controls; let i = $index; track item) {
+        <div [formGroupName]="i" class="item-row">
+            <mat-form-field appearance="outline">
+                <mat-label>ID Producto</mat-label>
+                <input matInput formControlName="idProducto" type="number">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Cantidad</mat-label>
+                <input matInput formControlName="cantidad" type="number">
+            </mat-form-field>
+
+            <!-- Botón eliminar -->
+            <button mat-icon-button color="warn" type="button" (click)="eliminarItem(i)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+        }
+    </div>
+
+    <button mat-raised-button color="accent" type="button" (click)="agregarItem()">
+        Agregar Item
+    </button>
+
+    <!-- Botón Guardar -->
+    <button mat-raised-button color="primary" type="submit">
+        Guardar Venta
+    </button>
+</form>

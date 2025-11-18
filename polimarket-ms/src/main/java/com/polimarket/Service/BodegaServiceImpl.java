@@ -2,6 +2,7 @@ package com.polimarket.Service;
 
 import com.polimarket.Converter.OrdenCompraConverter;
 import com.polimarket.DTO.DetalleOrdenCompraDTO;
+import com.polimarket.DTO.ItemDisponibleDTO;
 import com.polimarket.DTO.MensajeDTO;
 import com.polimarket.DTO.OrdenCompraDTO;
 import com.polimarket.Repository.*;
@@ -12,7 +13,9 @@ import com.polimarket.entity.ProveedorEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class BodegaServiceImpl implements BodegaService{
@@ -25,6 +28,8 @@ public class BodegaServiceImpl implements BodegaService{
     private ProveedorRepository proveedorRepository;
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    private StockRepository stockRepository;
 
     @Override
     public MensajeDTO registrarCompra(OrdenCompraDTO ordenCompraDTO) {
@@ -54,5 +59,19 @@ public class BodegaServiceImpl implements BodegaService{
         finally {
             return mensajeDTO;
         }
+    }
+
+    @Override
+    public List<ItemDisponibleDTO> listarItemsDisponibles() {
+        return stockRepository.findItemsDisponibles()
+                .stream()
+                .map(s -> ItemDisponibleDTO.builder()
+                        .idProducto(s.getProducto().getIdProducto())        // ✔ ya existe
+                        .nombreProducto(s.getProducto().getNombre())        // ✔ ok
+                        .precio(s.getProducto().getPrecio())                // ✔ ok
+                        .cantidadDisponible(s.getCantidadDisponible())      // ✔ ok
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 }

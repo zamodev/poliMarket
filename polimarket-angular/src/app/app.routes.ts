@@ -6,8 +6,8 @@ import { Inicio } from './inicio/inicio';
 
 
 export const routes: Routes = [
-    {path: "", component: Inicio },
-    {path: "clientes", component: Clientes },
-    {path: "productos", component: Productos },
-    {path: "venta", component: Venta},
+    {path: "", component: Inicio, title: "Bienvenido a Polimarket" },
+    {path: "clientes", component: Clientes, title: "Consulta de Clientes Potenciales" },
+    {path: "productos", component: Productos, title:"Productos"   },
+    {path: "venta", component: Venta, title: "Ventas"},
 ];
