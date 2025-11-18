@@ -1,0 +1,7 @@
+#productos-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 60vh;
+  width: 60vw;
+}

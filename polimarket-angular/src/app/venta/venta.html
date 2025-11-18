@@ -1,6 +1,5 @@
 <form [formGroup]="ventaForm" (ngSubmit)="guardar()" class="venta-form">
 
-    <!-- Cliente -->
     <div formGroupName="cliente">
         <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
@@ -13,7 +12,6 @@
         </mat-form-field>
     </div>
 
-    <!-- Items Venta -->
     <div formArrayName="itemsVenta">
         @for (item of itemsVenta.controls; let i = $index; track item) {
         <div [formGroupName]="i" class="item-row">
@@ -27,7 +25,6 @@
                 <input matInput formControlName="cantidad" type="number">
             </mat-form-field>
 
-            <!-- Botón eliminar -->
             <button mat-icon-button color="warn" type="button" (click)="eliminarItem(i)">
                 <mat-icon>delete</mat-icon>
             </button>
@@ -39,8 +36,49 @@
         Agregar Item
     </button>
 
-    <!-- Botón Guardar -->
     <button mat-raised-button color="primary" type="submit">
         Guardar Venta
     </button>
 </form>
+
+<!-- Modal -->
+<ng-template #detalleVenta let-data>
+    <h2 mat-dialog-title>Venta #{{ data.idVenta }}</h2>
+
+    <mat-dialog-content>
+        <p><strong>Cliente:</strong> {{ data.cliente.nombre }} ({{ data.cliente.email }})</p>
+
+        <h3>Items</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cant.</th>
+                    <th>Precio unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (item of data.itemsVenta; track item) {
+                <tr>
+                    <td>{{ item.descripcion }} (ID: {{ item.idProducto }})</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>{{ item.precioUnitario }}</td>
+                    <td>{{ item.total }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        <p style="margin-top: 16px;">
+            <strong>Total venta:</strong> {{ data.totalVenta }}
+        </p>
+        <p>
+            <strong>Fecha:</strong> {{ data.fechaVenta | date:'short' }}
+        </p>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cerrar</button>
+    </mat-dialog-actions>
+</ng-template>
