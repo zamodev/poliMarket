@@ -8,10 +8,12 @@ import com.polimarket.DTO.VentaDTO;
 import com.polimarket.Repository.ClienteRepository;
 import com.polimarket.Repository.DetalleVentasRepository;
 import com.polimarket.Repository.ProductoRepository;
+import com.polimarket.Repository.StockRepository;
 import com.polimarket.Repository.VentasRepository;
 import com.polimarket.entity.ClienteEntity;
 import com.polimarket.entity.DetalleVentaEntity;
 import com.polimarket.entity.ProductoEntity;
+import com.polimarket.entity.StockEntity;
 import com.polimarket.entity.VentasEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,6 +39,9 @@ public class VentaServiceImpl implements VentasService {
     @Autowired
     ProductoRepository productoRepository;
 
+    @Autowired
+    StockRepository stockRepository;
+
     @Override
     public List<Cliente> listarClientesPosibles() {
         return ClienteConverter.ClienteConverterListEntityTODTO(clienteRepository.findPosibles());
@@ -58,15 +63,33 @@ public class VentaServiceImpl implements VentasService {
         //registrar detalle
         BigDecimal totalVenta = BigDecimal.valueOf(0);
         List<DetalleVentaDTO> detalles = new ArrayList<>();
+
         for (DetalleVentaDTO item : ventaDTO.getItemsVenta()) {
-            Optional<ProductoEntity> producto = productoRepository.findById(item.getIdProducto());
-            if (producto.isPresent()) {
+            Optional<ProductoEntity> productoOpt = productoRepository.findById(item.getIdProducto());
+
+            if (productoOpt.isPresent()) {
+                ProductoEntity productoEntity = productoOpt.get();
+
+                Optional<StockEntity> stockOpt = stockRepository.findByProducto(productoEntity);
+                if (stockOpt.isPresent()) {
+                    StockEntity stock = stockOpt.get();
+
+                    int cantidadActual = stock.getCantidadDisponible();
+                    int nuevaCantidad = cantidadActual - item.getCantidad();
+                    stock.setCantidadDisponible(nuevaCantidad);
+                    stockRepository.save(stock);
+                }
                 DetalleVentaEntity itemDB = new DetalleVentaEntity();
-                itemDB.setProductoEntity(producto.get());
+                itemDB.setProductoEntity(productoEntity);
                 itemDB.setVentasEntity(ordenVenta);
                 itemDB.setCantidad(item.getCantidad());
-                itemDB.setTotal(producto.get().getPrecio().multiply(BigDecimal.valueOf(item.getCantidad())));
+                itemDB.setTotal(
+                        productoEntity.getPrecio().multiply(
+                                BigDecimal.valueOf(item.getCantidad())
+                        )
+                );
                 itemDB = detalleVentasRepository.save(itemDB);
+
                 totalVenta = totalVenta.add(itemDB.getTotal());
                 detalles.add(VentaConverter.detalleVentaEntityToDTO(itemDB));
             }
